@@ -18,11 +18,13 @@ Python e IA
 
 # 🧑‍🤝‍🧑 Integrantes del Grupo
 
-Nº	Nombre completo	C.I. / Matrícula	Rol en el proyecto
-1	Alvarez Salvatierra Marina Virginia	2946502	
-2	Barca Magarzo Carmen Silvia		1878909
-3	Cabrera Machuca Maria Gladys		6441400
-4	Zegarra Uriona Lucia Fernanda	7856544	
+1. **Alvarez Salvatierra Marina Virginia** 2946502.  
+
+2. **Barca Magarzo Carmen**1878909.  
+ 
+3. **Cabrera Machuca Maria Gladys** 6441400.  
+
+4. **Zegarra Uriona Lucia Fernanda** 7856544.  
 
 # 📌 Título del Proyecto
 Análisis Descriptivo y Predicción de Tendencias Estadísticas con IA
