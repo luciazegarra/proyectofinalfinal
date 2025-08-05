@@ -53,7 +53,7 @@ try:
         file_name="dataset_limpio.csv",
         mime="text/csv"
     )
-    st.info("📝 **La base original tiene 1010 datos donde se eliminaron duplicados y se reemplazaron los datos faltantes por valores promedio y más repetidos.**")
+    st.info("📝 **La base original tiene 1010 datos donde se eliminaron duplicados y se reemplazaron los datos faltantes por valores promedio y los datos más repetidos.**")
    
     # 4. Estadística descriptiva
     st.subheader("📈 Estadística Descriptiva")
@@ -151,6 +151,7 @@ try:
     sns.heatmap(dataset.corr(numeric_only=True), annot=True, cmap="coolwarm", ax=ax_corr)
     ax_corr.set_title("Matriz de Correlación")
     st.pyplot(fig_corr)
+    st.info("🔸 Se puede ver que los valores de correlación entre las variables son bastantes bajos, por lo tanto las variables no tienen ninguna realación entre si")
 
     # 🔗 Pairplot
     st.markdown("### 🔗 Relaciones entre Variables Numéricas")
@@ -209,6 +210,7 @@ try:
         st.write("**Intercepto del modelo:**", round(modelo.intercept_, 2))
         st.success(f"🔹 R² Score (conjunto de prueba): {r2_score(y_test, y_pred):.4f}")
         st.info(f"🔸 MSE: {mean_squared_error(y_test, y_pred):.4f}")
+        st.info("🔸 Se puede ver que el valor de correlación de Pearson Multiple es bastantes bajo, por lo tanto las variables no tienen ninguna realación entre si")
 
         # Comparación real vs predicho
         st.markdown("### 📉 Comparación: Predicción vs Valores Reales")
