@@ -62,7 +62,7 @@ try:
     st.write("**Curtosis (Kurtosis)**")
     st.write(dataset.kurtosis(numeric_only=True))
 
-    # 5. Visualizaciones
+    #5. VISUALIZACIÓN DE DISTRIBUCIONES Y RELACIONES
     st.subheader("📊 Visualización de Distribuciones y Relaciones")
 
     # 🎂 Distribución de Género
@@ -79,7 +79,7 @@ try:
     ax1.set_title('Distribución de Género')
     ax1.axis('equal')
     st.pyplot(fig1)
-    st.markdown("📝 **Conclusión:** La distribución de género es bastante equilibrada, aunque puede observarse una ligera predominancia de alguno de los grupos según el caso. Este equilibrio permite un análisis representativo de la población estudiada.")
+    st.info("📝 **Conclusión:** La distribución de género es bastante equilibrada, aunque puede observarse una ligera predominancia de alguno de los grupos según el caso. Este equilibrio permite un análisis representativo de la población estudiada.")
 
     # 🎓 Distribución de Nivel Educativo
     st.markdown("### 🎓 Distribución de Nivel Educativo")
@@ -102,7 +102,7 @@ try:
         ax2.annotate(percentage, (x, y), ha='center', va='bottom')
     plt.tight_layout()
     st.pyplot(fig2)
-    st.markdown("📝 **Conclusión:** Una mayoría significativa de la población cuenta con educación superior. Esto puede influir en variables como el ingreso mensual o la satisfacción de vida, destacando la importancia de la formación académica.")
+    st.info("📝 **Conclusión:** Una mayoría significativa de la población cuenta con educación superior. Esto puede influir en variables como el ingreso mensual o la satisfacción de vida, destacando la importancia de la formación académica.")
 
     # 📈 Histogramas con KDE
     st.markdown("### 📈 Distribuciones de Variables Numéricas")
