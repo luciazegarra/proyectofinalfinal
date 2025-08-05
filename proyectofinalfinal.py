@@ -11,6 +11,11 @@ import matplotlib.pyplot as plt
 import seaborn as sns
 
 from sklearn.impute import SimpleImputer
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression
+from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import r2_score, mean_squared_error, classification_report, confusion_matrix
+from sklearn.preprocessing import StandardScaler
 
 # 1. Configuración inicial
 st.set_page_config(page_title="Análisis Estadístico", layout="centered")
@@ -153,3 +158,72 @@ except FileNotFoundError:
     st.error("❌ No se encontró el archivo 'dataset_estadistica.csv'.")
 except Exception as e:
     st.error(f"⚠️ Ocurrió un error inesperado: {e}")
+    
+
+   # Título de sección
+st.subheader("🔍 Regresión Lineal Múltiple (con datos escalados)")
+
+# Separación de variables predictoras y objetivo
+x = dataset.drop(['ID_Persona', 'Satisfaccion_Vida'], axis=1)
+y = dataset['Satisfaccion_Vida']
+
+# Codificación de variables categóricas
+x = pd.get_dummies(x, drop_first=True)
+
+# Escalado
+scaler = StandardScaler()
+x_escalado = scaler.fit_transform(x)
+
+# División de datos
+from sklearn.model_selection import train_test_split
+x_train_escalado, x_test_escalado, y_train, y_test = train_test_split(
+    x_escalado, y, test_size=0.2, random_state=42
+)
+
+# Entrenar modelo
+modelo = LinearRegression()
+modelo.fit(x_train_escalado, y_train)
+y_pred = modelo.predict(x_test_escalado)
+
+# Resultados
+st.write("**Coeficientes de la regresión:**")
+st.write(pd.Series(modelo.coef_, index=x.columns))
+
+st.write("**Intercepto:**", modelo.intercept_)
+
+r2 = r2_score(y_test, y_pred)
+mse = mean_squared_error(y_test, y_pred)
+
+st.success(f"🔹 R² Score (conjunto de prueba): {r2:.4f}")
+st.info(f"🔸 Mean Squared Error (MSE): {mse:.4f}")
+
+# Gráfico de predicción vs real
+st.markdown("### 📉 Comparación: Predicción vs Valores Reales")
+fig3, ax3 = plt.subplots(figsize=(6, 4))
+ax3.scatter(y_test, y_pred, color='green', alpha=0.6)
+ax3.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
+ax3.set_xlabel("Valores reales (y_test)")
+ax3.set_ylabel("Predicción (y_pred)")
+ax3.set_title("Regresión Lineal Múltiple - y_test vs y_pred")
+ax3.grid(True)
+st.pyplot(fig3)
+
+# Heatmap de correlación
+st.markdown("### 🧊 Matriz de Correlación")
+correlation_matrix = dataset.corr(numeric_only=True)
+
+fig4, ax4 = plt.subplots(figsize=(8, 6))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", ax=ax4)
+ax4.set_title("Matriz de Correlación")
+st.pyplot(fig4)
+
+# Pairplot
+st.markdown("### 🔗 Relaciones entre Variables Numéricas")
+try:
+    import seaborn as sns
+    import matplotlib.pyplot as plt
+
+    pairplot_fig = sns.pairplot(dataset[numeric_cols + ['Satisfaccion_Vida']])
+    st.pyplot(pairplot_fig.figure)
+except Exception as e:
+    st.warning(f"No se pudo generar el pairplot: {e}")
