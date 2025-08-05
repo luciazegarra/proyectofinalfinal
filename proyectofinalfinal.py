@@ -160,107 +160,88 @@ except Exception as e:
     st.error(f"⚠️ Ocurrió un error inesperado: {e}")
     
 
-   # Título de sección
-st.subheader("🔍 Regresión Lineal Múltiple (con datos escalados)")
+# ---------------------------------------------
+# 🔁 Selección de modelo y predicción interactiva
+# ---------------------------------------------
+st.subheader("🧠 Predicción Interactiva con Selección de Modelo")
 
-# Separación de variables predictoras y objetivo
-x = dataset.drop(['ID_Persona', 'Satisfaccion_Vida'], axis=1)
-y = dataset['Satisfaccion_Vida']
-
-# Codificación de variables categóricas
-x = pd.get_dummies(x, drop_first=True)
-
-# Escalado
-scaler = StandardScaler()
-x_escalado = scaler.fit_transform(x)
-
-# División de datos
-from sklearn.model_selection import train_test_split
-x_train_escalado, x_test_escalado, y_train, y_test = train_test_split(
-    x_escalado, y, test_size=0.2, random_state=42
-)
-
-# Entrenar modelo
-modelo = LinearRegression()
-modelo.fit(x_train_escalado, y_train)
-y_pred = modelo.predict(x_test_escalado)
-
-# Resultados
-st.write("**Coeficientes de la regresión:**")
-st.write(pd.Series(modelo.coef_, index=x.columns))
-
-st.write("**Intercepto:**", modelo.intercept_)
-
-r2 = r2_score(y_test, y_pred)
-mse = mean_squared_error(y_test, y_pred)
-
-st.success(f"🔹 R² Score (conjunto de prueba): {r2:.4f}")
-st.info(f"🔸 Mean Squared Error (MSE): {mse:.4f}")
-
-# Gráfico de predicción vs real
-st.markdown("### 📉 Comparación: Predicción vs Valores Reales")
-fig3, ax3 = plt.subplots(figsize=(6, 4))
-ax3.scatter(y_test, y_pred, color='green', alpha=0.6)
-ax3.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
-ax3.set_xlabel("Valores reales (y_test)")
-ax3.set_ylabel("Predicción (y_pred)")
-ax3.set_title("Regresión Lineal Múltiple - y_test vs y_pred")
-ax3.grid(True)
-st.pyplot(fig3)
-
-# Heatmap de correlación
-st.markdown("### 🧊 Matriz de Correlación")
-correlation_matrix = dataset.corr(numeric_only=True)
-
-fig4, ax4 = plt.subplots(figsize=(8, 6))
-sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", ax=ax4)
-ax4.set_title("Matriz de Correlación")
-st.pyplot(fig4)
-
-# Pairplot
-st.markdown("### 🔗 Relaciones entre Variables Numéricas")
-try:
-    import seaborn as sns
-    import matplotlib.pyplot as plt
-
-    pairplot_fig = sns.pairplot(dataset[numeric_cols + ['Satisfaccion_Vida']])
-    st.pyplot(pairplot_fig.figure)
-except Exception as e:
-    st.warning(f"No se pudo generar el pairplot: {e}")
-    
-st.subheader("🔮 Predicción Interactiva de Satisfacción de Vida")
-
-# Campos de entrada con sliders
+# Entradas del usuario
 edad = st.slider("Edad", int(dataset["Edad"].min()), int(dataset["Edad"].max()), int(dataset["Edad"].mean()))
 ingreso = st.slider("Ingreso Mensual", int(dataset["Ingreso_Mensual"].min()), int(dataset["Ingreso_Mensual"].max()), int(dataset["Ingreso_Mensual"].mean()))
 horas_estudio = st.slider("Horas de Estudio Semanal", 0, 80, int(dataset["Horas_Estudio_Semanal"].mean()))
 
-nivel_educativo = st.selectbox("Nivel Educativo", sorted(dataset["Nivel_Educativo"].unique()))
-genero = st.selectbox("Género", sorted(dataset["Genero"].unique()))
+# Elegir modelo
+modelo_seleccionado = st.selectbox("📌 Selecciona el modelo de predicción", ["Regresión Lineal", "KNN Clasificador"])
 
-# Crear DataFrame con los valores seleccionados
-input_dict = {
-    "Edad": [edad],
-    "Ingreso_Mensual": [ingreso],
-    "Horas_Estudio_Semanal": [horas_estudio],
-    "Nivel_Educativo": [nivel_educativo],
-    "Genero": [genero]
-}
-input_df = pd.DataFrame(input_dict)
+# ----------------------------------
+# Preprocesamiento de entrada
+# ----------------------------------
+# Datos originales codificados
+x = dataset.drop(['ID_Persona', 'Satisfaccion_Vida'], axis=1)
+x = pd.get_dummies(x, drop_first=True)
+x_columns = x.columns
+y = dataset['Satisfaccion_Vida']
 
-# Codificación dummy para que coincida con el modelo
-input_df_encoded = pd.get_dummies(input_df)
-x_encoded_cols = x.columns  # columnas del modelo original
+# Escalar datos
+scaler = StandardScaler()
+x_escalado = scaler.fit_transform(x)
 
-# Asegurarse de tener todas las columnas necesarias
-for col in x_encoded_cols:
-    if col not in input_df_encoded.columns:
-        input_df_encoded[col] = 0
-input_df_encoded = input_df_encoded[x_encoded_cols]  # reordenar
+# División de datos
+x_train_escalado, x_test_escalado, y_train, y_test = train_test_split(
+    x_escalado, y, test_size=0.2, random_state=42
+)
 
-# Escalar datos de entrada
-input_scaled = scaler.transform(input_df_encoded)
+# Crear input_df para predicción
+input_data = pd.DataFrame({
+    'Edad': [edad],
+    'Ingreso_Mensual': [ingreso],
+    'Horas_Estudio_Semanal': [horas_estudio],
+    'Nivel_Educativo': [dataset['Nivel_Educativo'].mode()[0]],  # Valor más frecuente para columnas faltantes
+    'Genero': [dataset['Genero'].mode()[0]]
+})
+input_encoded = pd.get_dummies(input_data)
+for col in x_columns:
+    if col not in input_encoded.columns:
+        input_encoded[col] = 0
+input_encoded = input_encoded[x_columns]
+input_scaled = scaler.transform(input_encoded)
 
-# Predicción
-prediccion = modelo.predict(input_scaled)[0]
-st.success(f"🎯 Predicción del nivel de satisfacción de vida: **{prediccion:.2f}**")
+# ----------------------------------
+# Regresión Lineal
+# ----------------------------------
+if modelo_seleccionado == "Regresión Lineal":
+    modelo_rl = LinearRegression()
+    modelo_rl.fit(x_train_escalado, y_train)
+    pred = modelo_rl.predict(input_scaled)[0]
+    st.success(f"🔮 Predicción de satisfacción de vida (Regresión): **{pred:.2f}**")
+
+# ----------------------------------
+# KNN Clasificador
+# ----------------------------------
+elif modelo_seleccionado == "KNN Clasificador":
+    modelo_knn = KNeighborsClassifier(n_neighbors=3)
+    modelo_knn.fit(x_train_escalado, y_train)
+    pred = modelo_knn.predict(input_scaled)[0]
+    st.success(f"🔮 Predicción de satisfacción de vida (KNN): **{pred}**")
+
+    # Visualización 2D (Edad vs Ingreso)
+    st.markdown("### 📊 Visualización KNN - Edad vs Ingreso Mensual")
+    fig_knn, ax_knn = plt.subplots(figsize=(8, 6))
+    scatter = ax_knn.scatter(
+        dataset['Edad'], dataset['Ingreso_Mensual'],
+        c=dataset['Satisfaccion_Vida'],
+        cmap='viridis', edgecolor='k', alpha=0.7
+    )
+    ax_knn.scatter(
+        edad, ingreso,
+        color="red", marker='X', s=120,
+        label="Nuevo dato ingresado"
+    )
+    cbar = plt.colorbar(scatter, ax=ax_knn)
+    cbar.set_label("Satisfacción de Vida")
+    ax_knn.set_xlabel("Edad")
+    ax_knn.set_ylabel("Ingreso Mensual")
+    ax_knn.set_title(f"KNN - Predicción: {pred}")
+    ax_knn.legend()
+    ax_knn.grid(True)
+    st.pyplot(fig_knn)
