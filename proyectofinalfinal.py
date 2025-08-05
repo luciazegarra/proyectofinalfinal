@@ -41,6 +41,13 @@ try:
 
     st.subheader("✅ Datos Limpios")
     st.write(dataset.head())
+    
+    st.download_button(
+    label="📥 Descargar base limpia (sin codificar)",
+    data=dataset.to_csv(index=False),
+    file_name="dataset_limpio.csv",
+    mime="text/csv"
+)
 
     # 4. Estadística descriptiva
     st.subheader("📈 Estadística Descriptiva")
