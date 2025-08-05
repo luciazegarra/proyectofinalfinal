@@ -51,6 +51,14 @@ En la era digital actual, el análisis de datos se ha convertido en una herramie
 
 ---
 
+📷 Capturas de Pantalla
+Incluir al menos 3 capturas del sistema funcionando
+
+<img width="1920" height="1080" alt="image" src="https://github.com/user-attachments/assets/d842bb2b-eab4-422c-80b3-57174455e246" />
+
+
+---
+
 ## 🧪 Pruebas Realizadas
 
 - **Funcionales**:
