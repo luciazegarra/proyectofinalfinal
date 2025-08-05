@@ -126,7 +126,7 @@ try:
             forma = "asimétrica negativa (cola hacia la izquierda)"
         else:
             forma = "aproximadamente simétrica"
-        st.markdown(f"📝 **Conclusión:** La distribución de **{columna}** es {forma}.")
+        st.info(f"📝 **Conclusión:** La distribución de **{columna}** es {forma}.")
 
     # 📦 Boxplots
     st.markdown("### 📦 Boxplots de Variables Numéricas")
@@ -140,7 +140,7 @@ try:
         plt.tight_layout()
         st.pyplot(fig)
 
-        st.markdown(f"📝 **Conclusión:** El boxplot de **{columna}** permite visualizar la presencia de posibles valores atípicos y la dispersión de los datos.")
+        st.info(f"📝 **Conclusión:** El boxplot de **{columna}** permite visualizar la presencia de posibles valores atípicos y la dispersión de los datos.")
 
 except FileNotFoundError:
     st.error("❌ No se encontró el archivo 'dataset_estadistica.csv'.")
