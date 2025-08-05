@@ -53,7 +53,7 @@ try:
         file_name="dataset_limpio.csv",
         mime="text/csv"
     )
-    st.info("📝 **la base original tiene 1010 datos donde las se eliminaron 10 duplicados y se reemplazaron los datos faltantes por valores promedio y valores mas repetidos:** .")
+    st.info("📝 **La base original tiene 1010 datos donde se eliminaron duplicados y se reemplazaron los datos faltantes por valores promedio y más repetidos.**")
    
     # 4. Estadística descriptiva
     st.subheader("📈 Estadística Descriptiva")
@@ -92,7 +92,7 @@ try:
     ax1.set_title('Distribución de Género')
     ax1.axis('equal')
     st.pyplot(fig1)
-    st.info("📝 **Conclusión:** La distribución de género es bastante equilibrada, aunque puede observarse una ligera predominancia de alguno de los grupos según el caso. Este equilibrio permite un análisis representativo de la población estudiada.")
+    st.info("📝 **Conclusión:** La distribución de género es bastante equilibrada.")
 
     # 🎓 Distribución de Nivel Educativo
     st.markdown("### 🎓 Distribución de Nivel Educativo")
@@ -112,14 +112,21 @@ try:
         ax2.annotate(f'{p.get_height():.1f}%', (p.get_x() + p.get_width() / 2, p.get_height()),
                      ha='center', va='bottom')
     st.pyplot(fig2)
-    
-    st.info("📝 **Conclusión:** Una mayoría significativa de la población cuenta con educación superior. Esto puede influir en variables como el ingreso mensual o la satisfacción de vida, destacando la importancia de la formación académica.")
-    
+    st.info("📝 **Conclusión:** La mayoría cuenta con educación superior.")
+
     # 📈 Histogramas con KDE
     st.markdown("### 📈 Distribuciones de Variables Numéricas")
     ds_num = dataset.select_dtypes(include=['float64', 'int64'])
 
     for columna in ds_num.columns:
+        skewness = dataset[columna].skew()
+        if skewness > 0.5:
+            forma = "sesgada a la derecha (positiva)"
+        elif skewness < -0.5:
+            forma = "sesgada a la izquierda (negativa)"
+        else:
+            forma = "aproximadamente simétrica"
+
         st.write(f"Distribución de **{columna}**")
         fig, ax = plt.subplots(figsize=(8, 4))
         sns.histplot(dataset[columna], kde=True, color='skyblue', ax=ax)
@@ -127,16 +134,16 @@ try:
         ax.grid(True)
         st.pyplot(fig)
         st.info(f"📝 **Conclusión:** La distribución de **{columna}** es {forma}.")
+
     # 📦 Boxplots
     st.markdown("### 📦 Boxplots de Variables Numéricas")
     for columna in ds_num.columns:
-        st.write(f"Boxplot de **{columna}**")
         fig, ax = plt.subplots(figsize=(8, 4))
         sns.boxplot(x=dataset[columna], color='lightgreen', ax=ax)
         ax.set_title(f"Boxplot de {columna}")
         ax.grid(True)
         st.pyplot(fig)
-        st.info(f"📝 **Conclusión:** El boxplot de **{columna}** permite visualizar la presencia de posibles valores atípicos y la dispersión de los datos.")
+        st.info(f"📝 **Conclusión:** El boxplot de **{columna}** muestra la dispersión y posibles outliers.")
 
     # 🧊 Matriz de Correlación
     st.markdown("### 🧊 Matriz de Correlación")
@@ -202,7 +209,6 @@ try:
         st.write("**Intercepto del modelo:**", round(modelo.intercept_, 2))
         st.success(f"🔹 R² Score (conjunto de prueba): {r2_score(y_test, y_pred):.4f}")
         st.info(f"🔸 MSE: {mean_squared_error(y_test, y_pred):.4f}")
-        st.info("El valor de correlación multiple de Pearson es bastante bajo, por lo que se dice que las variables no tienen realación entre si")
 
         # Comparación real vs predicho
         st.markdown("### 📉 Comparación: Predicción vs Valores Reales")
@@ -235,7 +241,6 @@ try:
         ax_knn.set_ylabel("Ingreso Mensual")
         ax_knn.legend()
         st.pyplot(fig_knn)
-        st.info("🔸 Conclusión: ")
 
 except FileNotFoundError:
     st.error("❌ No se encontró el archivo 'dataset_estadistica.csv'.")
