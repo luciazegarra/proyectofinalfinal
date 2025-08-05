@@ -116,7 +116,8 @@ Funciones principales:
 
 ---
 
-📷 Capturas de Pantalla
+# 📷 Capturas de Pantalla
+
 Incluir al menos 3 capturas del sistema funcionando
 
 1. **Captura de pantalla 1** Codigo en spyder funcionando, codigo solo para que corra en spyder y no en steamlit
