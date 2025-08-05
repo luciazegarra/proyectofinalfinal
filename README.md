@@ -34,12 +34,12 @@ En la era digital actual, el análisis de datos se ha convertido en una herramie
 
 # OBJETIVOS:
 ## 🎯 Objetivo General del Proyecto
-•	Aplicar técnicas.estadísticas e inteligencia artificial para describir, visualizar y predecir comportamientos en un conjunto de  datos, desarrollando competencias analíticas en los integrantes del grupo
+Aplicar técnicas.estadísticas e inteligencia artificial para describir, visualizar y predecir comportamientos en un conjunto de  datos, desarrollando competencias analíticas en los integrantes del grupo
 Objetivos específicos:
-•	Calcular medidas de tendencia central, dispersión y forma.
-•	Visualizar distribuciones de datos y correlaciones.
-•	Aplicar modelos de clasificación o regresión para predecir una variable objetivo 
-•	Detectar patrones ocultos en los datos usando técnicas estadísticas y de IA 
+ -Calcular medidas de tendencia central, dispersión y forma.
+ -Visualizar distribuciones de datos y correlaciones.
+ -Aplicar modelos de clasificación o regresión para predecir una variable objetivo 
+ -Detectar patrones ocultos en los datos usando técnicas estadísticas y de IA 
 
 # 🧩 Descripción del Proyecto
 
@@ -61,19 +61,19 @@ https://colab.research.google.com/drive/1vUxvNgE6V5TmjdBOj7m2mWftJxPVP0dJ?usp=sh
 
 1. Módulo de Carga y Limpieza de Datos
 Primeramente se limpió la base de datos, haciendo una eliminación de los datos repetidos y la eliminación de los datos en blanco o nan que se tenia, los datos nan se reemplazaron para las variables cuantitativas con el promedio de la variable y para la variable cualitativa se reemplazo con el datos más frecuente
-•	Carga de Dataset: Lectura del archivo dataset_estadistica.csv desde el directorio del proyecto.
-•	Eliminación de duplicados: Se eliminan registros repetidos para garantizar la calidad de los datos.
-•	Imputación de valores nulos:
-o	Variables numéricas → reemplazo por la media.
-o	Variables categóricas → reemplazo por el valor más frecuente.
-•	Exportación de datos limpios: Opción para descargar el dataset procesado en formato CSV.
+ -Carga de Dataset: Lectura del archivo dataset_estadistica.csv desde el directorio del proyecto.
+ -Eliminación de duplicados: Se eliminan registros repetidos para garantizar la calidad de los datos.
+ -Imputación de valores nulos:
+ -Variables numéricas → reemplazo por la media.
+ - -Variables categóricas → reemplazo por el valor más frecuente.
+ - -Exportación de datos limpios: Opción para descargar el dataset procesado en formato CSV.
 
 2. Módulo de Estadística Descriptiva
 Ya con la base de datos limpia se procedió a sacar primeramente la estadística descriptiva de dos formas, una mediante la tabla ya establecida de spyder, pero esta tabla no tiene algunas de los parámetros estadísticos, por lo tanto se saco igual todos los parámetros estadísticos.
 En la segunda parte del trabajo se realizo los gráficos de los datos, mediante gráficos de tortas, barras, histogramas y boxplot para poder comprender la información
 
-•	Presentación de resumen estadístico general (media, mediana, moda, asimetría, curtosis).
-•	Visualizaciones gráficas:
+ -Presentación de resumen estadístico general (media, mediana, moda, asimetría, curtosis).
+ -Visualizaciones gráficas:
 o	Distribución de género (gráfico de pastel).
 o	Distribución del nivel educativo (barras con porcentajes).
 o	Histogramas con KDE y Boxplots para variables numéricas.
@@ -156,7 +156,7 @@ pestaña de imagenes
   -Se trabajo primero en google Colab para la creación de los codigos
   -Se trabajo en spyder para la creacción de los codigos y verificar que todos los codigos esten funcionando antes de subir cambiar los codigos para adptarlos para ser cargados en github y que pueda funcionar en   streamlit, se adjunta el enlace de Google Colab para la verificación y el documento de spyder sin codigos de steamlit.
   - Se realizo la cerificación de carga y limpieza del dataset.
-  - - Comprobación de que las gráficas se generan correctamente.  
+  - Comprobación de que las gráficas se generan correctamente.  
   - Validación de entradas y outputs en modelos predictivos.
   - Se genero el codigo para github y se verifico el funcionamiento en streamlit, como se puede ver en el link adjunto:
     
