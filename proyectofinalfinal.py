@@ -173,6 +173,19 @@ horas_estudio = st.slider("Horas de Estudio Semanal", 0, 80, int(dataset["Horas_
 # Elegir modelo
 modelo_seleccionado = st.selectbox("📌 Selecciona el modelo de predicción", ["Regresión Lineal", "KNN Clasificador"])
 
+# ---------------------------------------------
+# 🔁 Selección de modelo y predicción interactiva
+# ---------------------------------------------
+st.subheader("🧠 Predicción Interactiva con Selección de Modelo")
+
+# Entradas del usuario
+edad = st.slider("Edad", int(dataset["Edad"].min()), int(dataset["Edad"].max()), int(dataset["Edad"].mean()))
+ingreso = st.slider("Ingreso Mensual", int(dataset["Ingreso_Mensual"].min()), int(dataset["Ingreso_Mensual"].max()), int(dataset["Ingreso_Mensual"].mean()))
+horas_estudio = st.slider("Horas de Estudio Semanal", 0, 80, int(dataset["Horas_Estudio_Semanal"].mean()))
+
+# Elegir modelo
+modelo_seleccionado = st.selectbox("📌 Selecciona el modelo de predicción", ["Regresión Lineal", "KNN Clasificador"])
+
 # ----------------------------------
 # Preprocesamiento de entrada
 # ----------------------------------
@@ -196,7 +209,7 @@ input_data = pd.DataFrame({
     'Edad': [edad],
     'Ingreso_Mensual': [ingreso],
     'Horas_Estudio_Semanal': [horas_estudio],
-    'Nivel_Educativo': [dataset['Nivel_Educativo'].mode()[0]],  # Valor más frecuente para columnas faltantes
+    'Nivel_Educativo': [dataset['Nivel_Educativo'].mode()[0]],
     'Genero': [dataset['Genero'].mode()[0]]
 })
 input_encoded = pd.get_dummies(input_data)
@@ -210,10 +223,30 @@ input_scaled = scaler.transform(input_encoded)
 # Regresión Lineal
 # ----------------------------------
 if modelo_seleccionado == "Regresión Lineal":
-    modelo_rl = LinearRegression()
-    modelo_rl.fit(x_train_escalado, y_train)
-    pred = modelo_rl.predict(input_scaled)[0]
+    modelo = LinearRegression()
+    modelo.fit(x_train_escalado, y_train)
+    y_pred = modelo.predict(x_test_escalado)
+    pred = modelo.predict(input_scaled)[0]
+
     st.success(f"🔮 Predicción de satisfacción de vida (Regresión): **{pred:.2f}**")
+    st.write("**Intercepto del modelo:**", round(modelo.intercept_, 2))
+
+    r2 = r2_score(y_test, y_pred)
+    mse = mean_squared_error(y_test, y_pred)
+
+    st.success(f"🔹 R² Score (conjunto de prueba): {r2:.4f}")
+    st.info(f"🔸 Mean Squared Error (MSE): {mse:.4f}")
+
+    # Comparación real vs predicho
+    st.markdown("### 📉 Comparación: Predicción vs Valores Reales")
+    fig3, ax3 = plt.subplots(figsize=(6, 4))
+    ax3.scatter(y_test, y_pred, color='green', alpha=0.6)
+    ax3.plot([y_test.min(), y_test.max()], [y_test.min(), y_test.max()], 'k--', lw=2)
+    ax3.set_xlabel("Valores reales (y_test)")
+    ax3.set_ylabel("Predicción (y_pred)")
+    ax3.set_title("Regresión Lineal Múltiple - y_test vs y_pred")
+    ax3.grid(True)
+    st.pyplot(fig3)
 
 # ----------------------------------
 # KNN Clasificador
@@ -222,9 +255,10 @@ elif modelo_seleccionado == "KNN Clasificador":
     modelo_knn = KNeighborsClassifier(n_neighbors=3)
     modelo_knn.fit(x_train_escalado, y_train)
     pred = modelo_knn.predict(input_scaled)[0]
+
     st.success(f"🔮 Predicción de satisfacción de vida (KNN): **{pred}**")
 
-    # Visualización 2D (Edad vs Ingreso)
+    # Visualización 2D
     st.markdown("### 📊 Visualización KNN - Edad vs Ingreso Mensual")
     fig_knn, ax_knn = plt.subplots(figsize=(8, 6))
     scatter = ax_knn.scatter(
@@ -245,3 +279,24 @@ elif modelo_seleccionado == "KNN Clasificador":
     ax_knn.legend()
     ax_knn.grid(True)
     st.pyplot(fig_knn)
+
+# ----------------------------------
+# Análisis Adicional
+# ----------------------------------
+
+# Heatmap de correlación
+st.markdown("### 🧊 Matriz de Correlación")
+correlation_matrix = dataset.corr(numeric_only=True)
+
+fig4, ax4 = plt.subplots(figsize=(8, 6))
+sns.heatmap(correlation_matrix, annot=True, cmap='coolwarm', fmt=".2f", ax=ax4)
+ax4.set_title("Matriz de Correlación")
+st.pyplot(fig4)
+
+# Pairplot
+st.markdown("### 🔗 Relaciones entre Variables Numéricas")
+try:
+    pairplot_fig = sns.pairplot(dataset[numeric_cols + ['Satisfaccion_Vida']])
+    st.pyplot(pairplot_fig.figure)
+except Exception as e:
+    st.warning(f"No se pudo generar el pairplot: {e}")
