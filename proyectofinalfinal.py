@@ -227,3 +227,40 @@ try:
     st.pyplot(pairplot_fig.figure)
 except Exception as e:
     st.warning(f"No se pudo generar el pairplot: {e}")
+    
+st.subheader("🔮 Predicción Interactiva de Satisfacción de Vida")
+
+# Campos de entrada con sliders
+edad = st.slider("Edad", int(dataset["Edad"].min()), int(dataset["Edad"].max()), int(dataset["Edad"].mean()))
+ingreso = st.slider("Ingreso Mensual", int(dataset["Ingreso_Mensual"].min()), int(dataset["Ingreso_Mensual"].max()), int(dataset["Ingreso_Mensual"].mean()))
+horas_estudio = st.slider("Horas de Estudio Semanal", 0, 80, int(dataset["Horas_Estudio_Semanal"].mean()))
+
+nivel_educativo = st.selectbox("Nivel Educativo", sorted(dataset["Nivel_Educativo"].unique()))
+genero = st.selectbox("Género", sorted(dataset["Genero"].unique()))
+
+# Crear DataFrame con los valores seleccionados
+input_dict = {
+    "Edad": [edad],
+    "Ingreso_Mensual": [ingreso],
+    "Horas_Estudio_Semanal": [horas_estudio],
+    "Nivel_Educativo": [nivel_educativo],
+    "Genero": [genero]
+}
+input_df = pd.DataFrame(input_dict)
+
+# Codificación dummy para que coincida con el modelo
+input_df_encoded = pd.get_dummies(input_df)
+x_encoded_cols = x.columns  # columnas del modelo original
+
+# Asegurarse de tener todas las columnas necesarias
+for col in x_encoded_cols:
+    if col not in input_df_encoded.columns:
+        input_df_encoded[col] = 0
+input_df_encoded = input_df_encoded[x_encoded_cols]  # reordenar
+
+# Escalar datos de entrada
+input_scaled = scaler.transform(input_df_encoded)
+
+# Predicción
+prediccion = modelo.predict(input_scaled)[0]
+st.success(f"🎯 Predicción del nivel de satisfacción de vida: **{prediccion:.2f}**")
