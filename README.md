@@ -15,6 +15,7 @@ Python e IA
 # 📅 Fecha de entrega:
 
 11/08/2025
+
 # 🧑‍🤝‍🧑 Integrantes del Grupo
 
 Nº	Nombre completo	C.I. / Matrícula	Rol en el proyecto
